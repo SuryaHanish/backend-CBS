@@ -1,18 +1,13 @@
 {
     "version": 2,
     "builds": [
-      {
-        "src": "dist/server.js",
-        "use": "@vercel/node"
-      }
+      { "src": "api/**/*.js", "use": "@vercel/node" }
     ],
     "routes": [
-      {
-        "src": "/(.*)",
-        "dest": "/dist/server.js"
-      }
+      { "src": "/api/(.*)", "dest": "/api/$1" }
     ],
     "env": {
+      "FRONTEND_URL": "[\"https://testing-cbs.vercel.app\"]",
       "NODE_ENV": "production"
     }
   }
