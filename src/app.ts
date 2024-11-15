@@ -1,0 +1,68 @@
+// src/app.ts
+import express from 'express';
+import cors from 'cors';
+import dotenv from 'dotenv';
+import helmet from 'helmet';
+import mongoSanitize from 'express-mongo-sanitize';
+import rateLimit from 'express-rate-limit';
+import compression from 'compression';
+import connectDB from './utils/db';
+import errorMiddleware from './middleware/error';
+import blogRoutes from "./routes/blog.routes";
+import topicRoutes from './routes/topic.routes';
+import categoryRoutes from './routes/category.routes';
+import subjectRoutes from './routes/subject.routes';
+
+dotenv.config();
+const app = express();
+
+// Validate environment variables
+if (!process.env.FRONTEND_URL || !process.env.PORT) {
+  throw new Error('Missing required environment variables.');
+}
+
+// Connect to the database
+connectDB();
+
+// Set up middleware
+app.use(express.json());
+app.use(compression()); // Compress response bodies for improved performance
+app.use(helmet()); // Set security headers
+app.use(mongoSanitize()); // Prevent NoSQL injection
+
+// Set up rate limiting
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // Limit each IP to 100 requests per `windowMs`
+  message: 'Too many requests from this IP, please try again later.',
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+app.use(limiter); // Apply to all requests
+
+// Set up CORS
+const allowedOrigins = process.env.FRONTEND_URL
+  ? JSON.parse(process.env.FRONTEND_URL) // Parse the array-like string
+  : ['http://localhost:3000']; // Default value
+
+app.use(cors({
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,
+}));
+
+// Define routes
+app.use("/api", blogRoutes);
+app.use("/api", topicRoutes);
+app.use("/api", categoryRoutes);
+app.use("/api", subjectRoutes);
+
+// Error handling middleware
+app.use(errorMiddleware);
+
+export default app;
