@@ -44,21 +44,25 @@ app.use(limiter); // Apply to all requests
 
 // Set up CORS
 // Convert FRONTEND_URL into an array
+// Set up CORS
 const allowedOrigins = process.env.FRONTEND_URL
   ? JSON.parse(process.env.FRONTEND_URL) // Parse array of URLs from env variable
   : ['http://localhost:3000', 'https://testing-cbs.vercel.app']; // Default to these URLs if not set
 
-// Set up CORS
+console.log('Allowed Origins:', allowedOrigins);  // Log to check
+
 app.use(cors({
   origin: (origin, callback) => {
+    // If the origin is not provided or is in the allowed list, accept the request
     if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true); // Accept request
+      callback(null, true);
     } else {
-      callback(new Error('Not allowed by CORS'), false); // Reject request
+      callback(new Error('Not allowed by CORS'), false);
     }
   },
   credentials: true, // Allow credentials (cookies, etc.)
 }));
+
 
 // New home route for testing
 app.get('/', (req, res) => {
