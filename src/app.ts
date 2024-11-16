@@ -43,19 +43,21 @@ const limiter = rateLimit({
 app.use(limiter); // Apply to all requests
 
 // Set up CORS
+// Convert FRONTEND_URL into an array
 const allowedOrigins = process.env.FRONTEND_URL
-  ? JSON.parse(process.env.FRONTEND_URL) // Parse the array-like string
-  : ['http://localhost:3000']; // Default value
+  ? JSON.parse(process.env.FRONTEND_URL) // Parse array of URLs from env variable
+  : ['http://localhost:3000', 'https://testing-cbs.vercel.app']; // Default to these URLs if not set
 
+// Set up CORS
 app.use(cors({
   origin: (origin, callback) => {
     if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
+      callback(null, true); // Accept request
     } else {
-      callback(new Error('Not allowed by CORS'));
+      callback(new Error('Not allowed by CORS'), false); // Reject request
     }
   },
-  credentials: true,
+  credentials: true, // Allow credentials (cookies, etc.)
 }));
 
 // New home route for testing
