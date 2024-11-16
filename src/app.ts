@@ -15,6 +15,9 @@ import subjectRoutes from './routes/subject.routes';
 dotenv.config();
 const app = express();
 
+// Set 'trust proxy' to true to allow express-rate-limit to identify real IPs
+app.set('trust proxy', true);
+
 // Validate environment variables
 if (!process.env.FRONTEND_URL || !process.env.PORT) {
   throw new Error('Missing required environment variables.');
