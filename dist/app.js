@@ -3,7 +3,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-// src/app.ts
 const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
 const dotenv_1 = __importDefault(require("dotenv"));
@@ -54,7 +53,12 @@ app.use((0, cors_1.default)({
     },
     credentials: true,
 }));
-// Define routes
+// New home route for testing
+app.get('/', (req, res) => {
+    // Return a simple HTML div for testing
+    res.send('<div>Home Page</div>');
+});
+// Define other routes
 app.use("/api", blog_routes_1.default);
 app.use("/api", topic_routes_1.default);
 app.use("/api", category_routes_1.default);

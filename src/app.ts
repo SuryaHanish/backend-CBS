@@ -1,4 +1,3 @@
-// src/app.ts
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
@@ -56,7 +55,13 @@ app.use(cors({
   credentials: true,
 }));
 
-// Define routes
+// New home route for testing
+app.get('/', (req, res) => {
+  // Return a simple HTML div for testing
+  res.send('<div>Home Page</div>');
+});
+
+// Define other routes
 app.use("/api", blogRoutes);
 app.use("/api", topicRoutes);
 app.use("/api", categoryRoutes);
