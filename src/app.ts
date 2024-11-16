@@ -63,7 +63,7 @@ app.use(cors({
 // New home route for testing
 app.get('/', (req, res) => {
   // Return a simple HTML div for testing
-  res.send('<div>Home Page</div>');
+  res.send('<div>Home</div>');
 });
 
 // Define other routes
