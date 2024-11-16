@@ -15,7 +15,7 @@ import subjectRoutes from './routes/subject.routes';
 dotenv.config();
 const app = express();
 
-// Set 'trust proxy' to true to allow express-rate-limit to identify real IPs
+// Enable trust proxy to allow rate limiting to work with real client IP
 app.set('trust proxy', true);
 
 // Validate environment variables
@@ -43,8 +43,6 @@ const limiter = rateLimit({
 app.use(limiter); // Apply to all requests
 
 // Set up CORS
-// Convert FRONTEND_URL into an array
-// Set up CORS
 const allowedOrigins = process.env.FRONTEND_URL
   ? JSON.parse(process.env.FRONTEND_URL) // Parse array of URLs from env variable
   : ['http://localhost:3000', 'https://testing-cbs.vercel.app']; // Default to these URLs if not set
@@ -62,7 +60,6 @@ app.use(cors({
   },
   credentials: true, // Allow credentials (cookies, etc.)
 }));
-
 
 // New home route for testing
 app.get('/', (req, res) => {
