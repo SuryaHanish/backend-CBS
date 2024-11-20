@@ -33,14 +33,14 @@ app.use(helmet()); // Set security headers
 app.use(mongoSanitize()); // Prevent NoSQL injection
 
 // Set up rate limiting
-const limiter = rateLimit({
+/*const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 100, // Limit each IP to 100 requests per `windowMs`
   message: 'Too many requests from this IP, please try again later.',
   standardHeaders: true,
   legacyHeaders: false,
 });
-app.use(limiter); // Apply to all requests
+app.use(limiter); // Apply to all requests*/
 
 // Set up CORS
 const allowedOrigins = process.env.FRONTEND_URL
