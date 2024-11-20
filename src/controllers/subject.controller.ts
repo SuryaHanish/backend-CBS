@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import * as subjectService from '../services/subject.service';
 import { cacheData, getCacheData, clearCache } from "../services/cache.service";
 
-const SUBJECT_CACHE_TTL = 3600; // 1 hour cache TTL
+const SUBJECT_CACHE_TTL = 86400; // 1 hour cache TTL
 
 // Create a new subject
 export const createSubject = async (req: Request, res: Response): Promise<Response> => {

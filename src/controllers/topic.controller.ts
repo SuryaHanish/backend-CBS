@@ -3,7 +3,7 @@ import { TopicService } from "../services/topic.service";
 import { blogService } from "../services/blog.service";
 import { cacheData, getCacheData, clearCache } from "../services/cache.service";
 
-const TOPIC_CACHE_TTL = 3600; // 1 hour cache TTL
+const TOPIC_CACHE_TTL = 86400; // 1 hour cache TTL
 
 // Type guard for narrowing the 'unknown' type to an Error
 function isError(err: unknown): err is Error {

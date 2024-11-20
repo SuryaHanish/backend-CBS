@@ -4,7 +4,7 @@ import { blogService } from "../services/blog.service";
 import { BadRequestError, NotFoundError } from "../middleware/error";
 import { cacheData, getCacheData, clearCache } from "../services/cache.service";
 
-const BLOG_CACHE_TTL = 3600; // 1 hour for blog data cache
+const BLOG_CACHE_TTL = 86400; // 1 hour for blog data cache
 
 export class BlogController {
   // Create a new blog

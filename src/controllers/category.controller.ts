@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import * as categoryService from '../services/category.service';
 import { cacheData, getCacheData, clearCache } from "../services/cache.service";
 
-const CATEGORY_CACHE_TTL = 3600; // 1 hour cache TTL
+const CATEGORY_CACHE_TTL = 86400; // 1 hour cache TTL
 
 // Type guard to narrow down 'unknown' to 'Error'
 function isError(err: unknown): err is Error {
