@@ -8,7 +8,6 @@ const cors_1 = __importDefault(require("cors"));
 const dotenv_1 = __importDefault(require("dotenv"));
 const helmet_1 = __importDefault(require("helmet"));
 const express_mongo_sanitize_1 = __importDefault(require("express-mongo-sanitize"));
-const express_rate_limit_1 = __importDefault(require("express-rate-limit"));
 const compression_1 = __importDefault(require("compression"));
 const db_1 = __importDefault(require("./utils/db"));
 const error_1 = __importDefault(require("./middleware/error"));
@@ -32,14 +31,14 @@ app.use((0, compression_1.default)()); // Compress response bodies for improved 
 app.use((0, helmet_1.default)()); // Set security headers
 app.use((0, express_mongo_sanitize_1.default)()); // Prevent NoSQL injection
 // Set up rate limiting
-const limiter = (0, express_rate_limit_1.default)({
-    windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 100, // Limit each IP to 100 requests per `windowMs`
-    message: 'Too many requests from this IP, please try again later.',
-    standardHeaders: true,
-    legacyHeaders: false,
+/*const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // Limit each IP to 100 requests per `windowMs`
+  message: 'Too many requests from this IP, please try again later.',
+  standardHeaders: true,
+  legacyHeaders: false,
 });
-app.use(limiter); // Apply to all requests
+app.use(limiter); // Apply to all requests*/
 // Set up CORS
 const allowedOrigins = process.env.FRONTEND_URL
     ? JSON.parse(process.env.FRONTEND_URL) // Parse array of URLs from env variable

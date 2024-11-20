@@ -25,6 +25,8 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteCategory = exports.updateCategory = exports.getCategoryBySlug = exports.getCategoriesBySubjectSlug = exports.getAllCategories = exports.createCategory = void 0;
 const categoryService = __importStar(require("../services/category.service"));
+const cache_service_1 = require("../services/cache.service");
+const CATEGORY_CACHE_TTL = 3600; // 1 hour cache TTL
 // Type guard to narrow down 'unknown' to 'Error'
 function isError(err) {
     return err instanceof Error;
@@ -34,6 +36,9 @@ const createCategory = async (req, res) => {
     try {
         const { name, subjectSlug, slug } = req.body;
         const category = await categoryService.createCategory(name, subjectSlug, slug);
+        // Clear relevant cache entries
+        await (0, cache_service_1.clearCache)("all_categories");
+        await (0, cache_service_1.clearCache)(`subject_categories_${subjectSlug}`);
         res.status(201).json({ message: 'Category created successfully', category });
     }
     catch (err) {
@@ -46,7 +51,15 @@ exports.createCategory = createCategory;
 // Get all categories
 const getAllCategories = async (req, res) => {
     try {
+        // Try to get from cache first
+        const cachedCategories = await (0, cache_service_1.getCacheData)("all_categories");
+        if (cachedCategories) {
+            return res.status(200).json({ categories: cachedCategories });
+        }
+        // If not in cache, get from database
         const categories = await categoryService.getAllCategories();
+        // Cache the results
+        await (0, cache_service_1.cacheData)("all_categories", categories, CATEGORY_CACHE_TTL);
         res.status(200).json({ categories });
     }
     catch (err) {
@@ -60,10 +73,18 @@ exports.getAllCategories = getAllCategories;
 const getCategoriesBySubjectSlug = async (req, res) => {
     try {
         const { subjectSlug } = req.params;
+        // Try to get from cache first
+        const cachedCategories = await (0, cache_service_1.getCacheData)(`subject_categories_${subjectSlug}`);
+        if (cachedCategories) {
+            return res.status(200).json({ categories: cachedCategories });
+        }
+        // If not in cache, get from database
         const categories = await categoryService.getCategoriesBySubjectSlug(subjectSlug);
         if (!categories || categories.length === 0) {
             return res.status(404).json({ message: 'No categories found for the given subject' });
         }
+        // Cache the results
+        await (0, cache_service_1.cacheData)(`subject_categories_${subjectSlug}`, categories, CATEGORY_CACHE_TTL);
         res.status(200).json({ categories });
     }
     catch (err) {
@@ -77,10 +98,18 @@ exports.getCategoriesBySubjectSlug = getCategoriesBySubjectSlug;
 const getCategoryBySlug = async (req, res) => {
     try {
         const { slug } = req.params;
+        // Try to get from cache first
+        const cachedCategory = await (0, cache_service_1.getCacheData)(`category_${slug}`);
+        if (cachedCategory) {
+            return res.status(200).json({ category: cachedCategory });
+        }
+        // If not in cache, get from database
         const category = await categoryService.getCategoryBySlug(slug);
         if (!category) {
             return res.status(404).json({ message: 'Category not found' });
         }
+        // Cache the results
+        await (0, cache_service_1.cacheData)(`category_${slug}`, category, CATEGORY_CACHE_TTL);
         res.status(200).json({ category });
     }
     catch (err) {
@@ -99,6 +128,14 @@ const updateCategory = async (req, res) => {
         if (!updatedCategory) {
             return res.status(404).json({ message: 'Category not found' });
         }
+        // Clear relevant cache entries
+        await (0, cache_service_1.clearCache)(`category_${slug}`);
+        await (0, cache_service_1.clearCache)("all_categories");
+        await (0, cache_service_1.clearCache)(`subject_categories_${subjectSlug}`);
+        /* Also clear old subject categories if subject changed
+        if (updatedCategory.oldSubjectSlug && updatedCategory.oldSubjectSlug !== subjectSlug) {
+          await clearCache(`subject_categories_${updatedCategory.oldSubjectSlug}`);
+        }*/
         res.status(200).json({ message: 'Category updated successfully', updatedCategory });
     }
     catch (err) {
@@ -116,6 +153,10 @@ const deleteCategory = async (req, res) => {
         if (!category) {
             return res.status(404).json({ message: 'Category not found' });
         }
+        // Clear relevant cache entries
+        await (0, cache_service_1.clearCache)(`category_${slug}`);
+        await (0, cache_service_1.clearCache)("all_categories");
+        await (0, cache_service_1.clearCache)(`subject_categories_${category.subjectSlug}`);
         res.status(200).json({ message: 'Category and associated topics deleted successfully' });
     }
     catch (err) {
