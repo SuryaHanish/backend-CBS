@@ -30,6 +30,11 @@ export const updateCategory = async (slug: string, name: string, subjectSlug: st
   );
 };
 
+// Get all categories by subjectSlug
+export const getCategoriesBySubjectSlug = async (subjectSlug: string): Promise<ICategory[]> => {
+  return Category.find({ subjectSlug });
+};
+
 // Delete a category by slug and its associated topics and blogs
 export const deleteCategory = async (slug: string): Promise<ICategory | null> => {
   // Find the category to delete

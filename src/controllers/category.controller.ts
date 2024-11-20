@@ -32,6 +32,22 @@ export const getAllCategories = async (req: Request, res: Response) => {
   }
 };
 
+// Get all categories by subjectSlug
+export const getCategoriesBySubjectSlug = async (req: Request, res: Response) => {
+  try {
+    const { subjectSlug } = req.params;
+    const categories = await categoryService.getCategoriesBySubjectSlug(subjectSlug);
+    if (!categories || categories.length === 0) {
+      return res.status(404).json({ message: 'No categories found for the given subject' });
+    }
+    res.status(200).json({ categories });
+  } catch (err) {
+    if (isError(err)) {
+      res.status(500).json({ message: 'Error fetching categories by subjectSlug', error: err.message });
+    }
+  }
+};
+
 // Get a category by its slug
 export const getCategoryBySlug = async (req: Request, res: Response) => {
   try {

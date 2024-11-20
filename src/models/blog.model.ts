@@ -170,6 +170,7 @@ export interface Blog {
     tags: string[];
     readingTime?: number;
     difficulty?: "beginner" | "intermediate" | "advanced";
+    categorySlug: string;
   };
 }
 
@@ -212,6 +213,7 @@ const blogSchema = new Schema({
     tags: { type: [String] },
     readingTime: { type: Number },
     difficulty: { type: String, enum: ["beginner", "intermediate", "advanced"] },
+    categorySlug: { type: String, required: true }
   },
 });
 

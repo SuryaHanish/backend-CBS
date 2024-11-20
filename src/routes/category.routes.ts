@@ -17,6 +17,9 @@ router.get('/categories', asyncHandler((req: Request, res: Response) => category
 // Route to get a category by its slug
 router.get('/category/:slug', asyncHandler((req: Request, res: Response) => categoryController.getCategoryBySlug(req, res)));
 
+// Route to get categories by subjectSlug
+router.get('/categories/subject/:subjectSlug', asyncHandler((req: Request, res: Response) => categoryController.getCategoriesBySubjectSlug(req, res)));
+
 // Route to update a category by its slug
 router.put('/category/:slug', asyncHandler((req: Request, res: Response) => categoryController.updateCategory(req, res)));
 
