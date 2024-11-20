@@ -35,6 +35,8 @@ router.post('/categories', asyncHandler((req, res) => categoryController.createC
 router.get('/categories', asyncHandler((req, res) => categoryController.getAllCategories(req, res)));
 // Route to get a category by its slug
 router.get('/category/:slug', asyncHandler((req, res) => categoryController.getCategoryBySlug(req, res)));
+// Route to get categories by subjectSlug
+router.get('/categories/subject/:subjectSlug', asyncHandler((req, res) => categoryController.getCategoriesBySubjectSlug(req, res)));
 // Route to update a category by its slug
 router.put('/category/:slug', asyncHandler((req, res) => categoryController.updateCategory(req, res)));
 // Route to delete a category by its slug

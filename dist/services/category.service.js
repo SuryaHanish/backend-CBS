@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteCategory = exports.updateCategory = exports.getCategoryBySlug = exports.getAllCategories = exports.createCategory = void 0;
+exports.deleteCategory = exports.getCategoriesBySubjectSlug = exports.updateCategory = exports.getCategoryBySlug = exports.getAllCategories = exports.createCategory = void 0;
 // services/category.service.ts
 const category_model_1 = __importDefault(require("../models/category.model"));
 const topic_model_1 = __importDefault(require("../models/topic.model"));
@@ -31,6 +31,11 @@ const updateCategory = async (slug, name, subjectSlug) => {
     );
 };
 exports.updateCategory = updateCategory;
+// Get all categories by subjectSlug
+const getCategoriesBySubjectSlug = async (subjectSlug) => {
+    return category_model_1.default.find({ subjectSlug });
+};
+exports.getCategoriesBySubjectSlug = getCategoriesBySubjectSlug;
 // Delete a category by slug and its associated topics and blogs
 const deleteCategory = async (slug) => {
     // Find the category to delete

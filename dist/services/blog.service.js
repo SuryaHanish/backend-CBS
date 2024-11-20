@@ -29,6 +29,7 @@ class BlogServiceImpl {
             tags: metadata.tags || [],
             readingTime: metadata.readingTime || undefined, // Use undefined instead of null
             difficulty: metadata.difficulty || "beginner", // Default to "beginner"
+            categorySlug: metadata.categorySlug
         };
         // Save the blog to the database with the generated slug
         const newBlog = await this.database.saveBlog({

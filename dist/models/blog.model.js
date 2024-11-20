@@ -64,6 +64,7 @@ const blogSchema = new mongoose_1.Schema({
         tags: { type: [String] },
         readingTime: { type: Number },
         difficulty: { type: String, enum: ["beginner", "intermediate", "advanced"] },
+        categorySlug: { type: String, required: true }
     },
 });
 // Blog model

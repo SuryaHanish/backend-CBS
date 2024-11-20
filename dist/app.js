@@ -18,6 +18,8 @@ const category_routes_1 = __importDefault(require("./routes/category.routes"));
 const subject_routes_1 = __importDefault(require("./routes/subject.routes"));
 dotenv_1.default.config();
 const app = (0, express_1.default)();
+// Enable trust proxy to allow rate limiting to work with real client IP
+app.set('trust proxy', true);
 // Validate environment variables
 if (!process.env.FRONTEND_URL || !process.env.PORT) {
     throw new Error('Missing required environment variables.');
@@ -40,23 +42,25 @@ const limiter = (0, express_rate_limit_1.default)({
 app.use(limiter); // Apply to all requests
 // Set up CORS
 const allowedOrigins = process.env.FRONTEND_URL
-    ? JSON.parse(process.env.FRONTEND_URL) // Parse the array-like string
-    : ['http://localhost:3000']; // Default value
+    ? JSON.parse(process.env.FRONTEND_URL) // Parse array of URLs from env variable
+    : ['http://localhost:3000', 'https://testing-cbs.vercel.app']; // Default to these URLs if not set
+console.log('Allowed Origins:', allowedOrigins); // Log to check
 app.use((0, cors_1.default)({
     origin: (origin, callback) => {
+        // If the origin is not provided or is in the allowed list, accept the request
         if (!origin || allowedOrigins.includes(origin)) {
             callback(null, true);
         }
         else {
-            callback(new Error('Not allowed by CORS'));
+            callback(new Error('Not allowed by CORS'), false);
         }
     },
-    credentials: true,
+    credentials: true, // Allow credentials (cookies, etc.)
 }));
 // New home route for testing
 app.get('/', (req, res) => {
     // Return a simple HTML div for testing
-    res.send('<div>Home Page</div>');
+    res.send('<div>Home</div>');
 });
 // Define other routes
 app.use("/api", blog_routes_1.default);

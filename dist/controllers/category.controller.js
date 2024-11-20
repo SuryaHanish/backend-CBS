@@ -23,7 +23,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteCategory = exports.updateCategory = exports.getCategoryBySlug = exports.getAllCategories = exports.createCategory = void 0;
+exports.deleteCategory = exports.updateCategory = exports.getCategoryBySlug = exports.getCategoriesBySubjectSlug = exports.getAllCategories = exports.createCategory = void 0;
 const categoryService = __importStar(require("../services/category.service"));
 // Type guard to narrow down 'unknown' to 'Error'
 function isError(err) {
@@ -56,6 +56,23 @@ const getAllCategories = async (req, res) => {
     }
 };
 exports.getAllCategories = getAllCategories;
+// Get all categories by subjectSlug
+const getCategoriesBySubjectSlug = async (req, res) => {
+    try {
+        const { subjectSlug } = req.params;
+        const categories = await categoryService.getCategoriesBySubjectSlug(subjectSlug);
+        if (!categories || categories.length === 0) {
+            return res.status(404).json({ message: 'No categories found for the given subject' });
+        }
+        res.status(200).json({ categories });
+    }
+    catch (err) {
+        if (isError(err)) {
+            res.status(500).json({ message: 'Error fetching categories by subjectSlug', error: err.message });
+        }
+    }
+};
+exports.getCategoriesBySubjectSlug = getCategoriesBySubjectSlug;
 // Get a category by its slug
 const getCategoryBySlug = async (req, res) => {
     try {
